@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>앵무새 죽이기: 법정의 선택</title>
+<style>
+    body {
+        font-family: Arial, sans-serif;
+        background: #f3efe6;
+        margin: 0;
+        padding: 0;
+        color: #2d2d2d;
+    }
+
+    .container {
+        max-width: 850px;
+        margin: 40px auto;
+        background: white;
+        padding: 35px;
+        border-radius: 16px;
+        box-shadow: 0 8px 20px rgba(0,0,0,0.15);
+    }
+
+    h1 {
+        text-align: center;
+        color: #5d3c2b;
+    }
+
+    #story {
+        white-space: pre-line;
+        line-height: 1.9;
+        font-size: 18px;
+        margin: 30px 0;
+        min-height: 280px;
+    }
+
+    button {
+        display: block;
+        width: 100%;
+        padding: 14px;
+        margin: 12px 0;
+        font-size: 16px;
+        border: none;
+        border-radius: 10px;
+        background: #7a5238;
+        color: white;
+        cursor: pointer;
+        transition: 0.3s;
+    }
+
+    button:hover {
+        background: #5f3f2b;
+    }
+
+    .ending {
+        background: #f7f2eb;
+        border-left: 5px solid #7a5238;
+        padding: 20px;
+        margin-top: 20px;
+        line-height: 1.8;
+    }
+</style>
+</head>
+<body>
+<div class="container">
+    <h1>앵무새 죽이기: 법정의 선택</h1>
+    <div id="story"></div>
+    <div id="choices"></div>
+</div>
+
+<script>
+const story = document.getElementById("story");
+const choices = document.getElementById("choices");
+
+const scenes = {
+    intro: {
+        text: `1933년, 미국 남부 알라바마 메이컴.
+
+당신은 흑인 청년 톰 로빈슨입니다.
+
+거리에는 '백인 전용'과 '흑인 전용' 표지판이 여전히 존재합니다.
+버스 좌석도, 학교도, 식당도 분리되어 있습니다.
+
+당신은 매일 백인들의 눈치를 보며 살아갑니다.
+억울한 일을 당해도 쉽게 목소리를 낼 수 없습니다.
+
+어느 날, 평소처럼 일을 마치고 집으로 돌아가던 길.
+한 백인 여성, 메이엘라가 당신에게 도움을 요청합니다.`,
+        options: [
+            { text: "도움을 주러 집 안으로 들어간다", next: "house" },
+            { text: "문제가 생길까 거절한다", next: "refuse" }
+        ]
+    },
+
+    house: {
+        text: `당신은 망설이다 집 안으로 들어갑니다.
+
+잠시 후 갑자기 문이 열리고,
+메이엘라의 아버지가 분노한 얼굴로 나타납니다.
+
+"네가 감히!"
+
+그의 외침과 함께 상황은 걷잡을 수 없이 커집니다.
+
+다음 날, 당신은 백인 여성 폭행 혐의로 체포됩니다.`,
+        options: [
+            { text: "경찰에게 결백을 주장한다", next: "arrest" }
+        ]
+    },
+
+    refuse: {
+        text: `당신은 본능적으로 위험을 감지하고 거절합니다.
+
+그러나 다음 날,
+마을에는 당신이 사건 현장 근처에 있었다는 소문이 퍼집니다.
+
+결국 당신 역시 용의자로 지목됩니다.`,
+        options: [
+            { text: "경찰 조사에 응한다", next: "arrest" }
+        ]
+    },
+
+    arrest: {
+        text: `경찰서.
+
+당신은 아무런 증거 없이 취조를 받습니다.
+
+당신의 말보다 백인 여성의 말이 더 신뢰받는 분위기입니다.
+
+당신은 어떻게 대응하시겠습니까?`,
+        options: [
+            { text: "계속 결백을 주장한다", next: "atticus" },
+            { text: "두려워 침묵한다", next: "silent" }
+        ]
+    },
+
+    silent: {
+        text: `당신은 두려움에 말을 아낍니다.
+
+하지만 침묵은 상황을 더 악화시킵니다.
+
+마을 사람들은 이미 당신을 범인으로 확신합니다.`,
+        options: [
+            { text: "재판으로 넘어간다", next: "court" }
+        ]
+    },
+
+    atticus: {
+        text: `당신에게 한 명의 변호사가 찾아옵니다.
+
+애티커스 핀치.
+
+그는 마을의 비난을 감수하면서도 당신의 변호를 맡기로 합니다.
+
+"진실을 말하세요. 쉽지 않겠지만."
+
+당신은 재판을 준비합니다.`,
+        options: [
+            { text: "재판 시작", next: "court" }
+        ]
+    },
+
+    court: {
+        text: `재판 당일.
+
+법정은 백인들로 가득 차 있습니다.
+당신을 바라보는 시선은 차갑습니다.
+
+배심원단 역시 모두 백인입니다.
+
+당신은 마지막으로 어떤 태도를 취하겠습니까?`,
+        options: [
+            { text: "끝까지 무죄를 주장한다", next: "guilty" },
+            { text: "도망칠 기회를 노린다", next: "escape" },
+            { text: "체념한다", next: "giveup" }
+        ]
+    },
+
+    guilty: {
+        text: `당신은 끝까지 진실을 말했습니다.
+
+하지만 판결은 이미 정해져 있었습니다.
+
+유죄.`,
+        ending: true,
+        endingText: `
+당신은 무고하게 유죄 판결을 받았습니다.
+
+이 사건은 당시 미국 남부 사회의 구조적 인종차별을 보여줍니다.
+
+그러나 이후 미국에서는 흑인 민권운동이 전개됩니다.
+
+[인권 확대 과정]
+- 1954 브라운 판결
+- 1955 몽고메리 버스 보이콧
+- 1964 민권법 제정
+
+[확립된 권리]
+- 법 앞의 평등
+- 인종차별 금지
+- 시민권 보장
+
+"모든 인간은 법 앞에 평등하다."`
+    },
+
+    escape: {
+        text: `당신은 탈출을 시도하지만 실패합니다.
+
+당신의 행동은 오히려 편견을 강화하는 근거로 이용됩니다.`,
+        ending: true,
+        endingText: `
+개인의 탈출은 구조적 차별을 해결하지 못했습니다.
+
+인권은 개인의 생존을 넘어
+사회 구조와 법 제도의 변화를 통해 확장됩니다.`
+    },
+
+    giveup: {
+        text: `당신은 현실 앞에서 무너집니다.
+
+하지만 침묵은 부당함을 멈추지 못했습니다.`,
+        ending: true,
+        endingText: `
+침묵한다고 차별이 사라지지 않습니다.
+
+이후 수많은 시민들이
+흑인 민권운동을 통해 불평등에 저항했습니다.`
+    }
+};
+
+function renderScene(key) {
+    const scene = scenes[key];
+    story.innerText = scene.text;
+    choices.innerHTML = "";
+
+    if (scene.ending) {
+        const endDiv = document.createElement("div");
+        endDiv.className = "ending";
+        endDiv.innerText = scene.endingText;
+        choices.appendChild(endDiv);
+
+        const restart = document.createElement("button");
+        restart.innerText = "다시 시작하기";
+        restart.onclick = () => renderScene("intro");
+        choices.appendChild(restart);
+        return;
+    }
+
+    scene.options.forEach(option => {
+        const btn = document.createElement("button");
+        btn.innerText = option.text;
+        btn.onclick = () => renderScene(option.next);
+        choices.appendChild(btn);
+    });
+}
+
+renderScene("intro");
+</script>
+</body>
+</html>
